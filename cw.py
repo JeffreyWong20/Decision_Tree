@@ -5,9 +5,9 @@ import numpy as np
 import matplotlib as plt
 from numpy.random import default_rng
 from plot_tree import plot_tree 
+import sys
 #config
 limit = 10000
-
 
 def split_dataset(x, y, test_proportion, random_generator=default_rng()): 
     shuffled_indices = random_generator.permutation(len(x))
@@ -19,8 +19,6 @@ def split_dataset(x, y, test_proportion, random_generator=default_rng()):
     x_test = x[shuffled_indices[n_train:]]
     y_test = y[shuffled_indices[n_train:]]
     return (x_train, x_test, y_train, y_test)
-
-    
 
 def find_prob(dataset): # compute the probability of each class 
     prob_array = []
@@ -91,8 +89,8 @@ def decision_tree_learning(dataset, depth):
         return  {
             "attribute":[],
             "value":[],
-            "left":[],
-            "right":[],
+            "left":{},
+            "right":{},
             "leaf": True,
             "label": np.unique(dataset[:,-1])
         }
@@ -137,8 +135,6 @@ def decision_tree_learning(dataset, depth):
         }
 
 
-
-
 def predict(dict,testcase):
     # print("---------------- Predicting -----------------")
     # print(testcase)
@@ -150,6 +146,7 @@ def predict(dict,testcase):
         return predict(dict["left"],testcase)
     else:
         return predict(dict["right"],testcase)
+
 def evaluation(dict, testset, test_label):
     count = 0
     for i,instance in enumerate(testset):
@@ -158,18 +155,58 @@ def evaluation(dict, testset, test_label):
     # print(test_label.shape, count)
     return count/test_label.shape[0]
 
+
+# def subset(dict, train_set):
+#     # train_x = train_set[:,(0,1,2,3,4,5,6)]
+#     # train_y = train_set[:,-1]
+#     # print(dict["left"].keys())
+#     # print(dict["left"]["leaf"])
+#     if (dict["left"]["leaf"] == True and dict["right"]["leaf"] == True) :
+#         print("--------------------------------")
+#         print(train_set)
+#         y = np.bincount(train_set[:,-1].astype(int)) 
+#         maximum = max(y)
+#         for i in range(len(y)):
+#             if y[i] == maximum:
+#                 print(i, end=" ")
+#                 # we will replace the node with a leaf with this label
+#                 return {
+#                     "attribute":[],
+#                     "value":[],
+#                     "left":{},
+#                     "right":{},
+#                     "leaf": True,
+#                     "label": y[i]
+#                 }
+#     #     return train_set
+#     elif (dict["left"]["leaf"] == True and dict["right"]["leaf"] != True):
+#         subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
+#     elif (dict["right"]["leaf"] == True and dict["left"]["leaf"] != True):
+#         subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
+#     else:
+#         subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
+#         subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
+
+
+
 dataset_path_clean = "/Users/jeffreywong/Desktop/Decision_Tree/intro2ML-coursework1/wifi_db/clean_dataset.txt"
 dataset_path_noisy = "/Users/jeffreywong/Desktop/Decision_Tree/intro2ML-coursework1/wifi_db/noisy_dataset.txt"
 # print(np.loadtxt(dataset_path_clean).shape)
 # dataset = np.loadtxt(dataset_path_clean)
 
-dataset = np.loadtxt(dataset_path_noisy)
+dataset_noisy = np.loadtxt(dataset_path_noisy)
+dataset_clean = np.loadtxt(dataset_path_noisy)
 
 seed = 60012
 rg = default_rng(seed)
-x=dataset[:,(0,1,2,3,4,5,6)]
-y=dataset[:,-1]
+x=dataset_noisy[:,(0,1,2,3,4,5,6)]
+y=dataset_noisy[:,-1]
+x=dataset_clean[:,(0,1,2,3,4,5,6)]
+y=dataset_clean[:,-1]
+
 x_train, x_test, y_train, y_test = split_dataset(x, y, test_proportion=0.2, random_generator=rg)
+#x_train, x_test, y_train, y_test = dataset_noisy[:,(0,1,2,3,4,5,6)], dataset_clean[:,(0,1,2,3,4,5,6)], dataset_noisy[:,-1], dataset_clean[:,-1]
+
 train_set = np.insert(x_train, x_train.shape[1], y_train, axis=1)
 train_set = np.asarray(train_set)
 
@@ -183,12 +220,85 @@ train_set = np.asarray(train_set)
 # print(y_train)
 # print(train_set)
 # print(train_set.shape)
-
 tree = decision_tree_learning(train_set,0)
-plot_tree(tree)
+plot_tree(tree, 5000, 300)
+# print(tree)
 
+
+def count_keys(dict_, counter=0):
+    for each_key in dict_:
+        if isinstance(dict_[each_key], dict):
+            # Recursive call
+            counter = count_keys(dict_[each_key], counter + 1)
+        else:
+            counter += 1
+    return counter
+
+def subset(dict, train_set):
+    # train_x = train_set[:,(0,1,2,3,4,5,6)]
+    # train_y = train_set[:,-1]
+    # print(dict["left"].keys())
+    # print(dict["left"]["leaf"])
+    if (dict["left"]["leaf"] == True and dict["right"]["leaf"] == True) :
+        print("--------------------------------")
+        print(train_set)
+        y = np.bincount(train_set[:,-1].astype(int)) 
+        maximum = max(y)
+        for i in range(len(y)):
+            if y[i] == maximum:
+                # print(i, end=" ") # we will replace the node with a leaf with this label
+                print("before: ", count_keys(tree))
+                init_evaluation = evaluation(tree, x_test, y_test)
+
+                back_1 = dict["attribute"]
+                back_2 = dict["value"]
+                back_3 = dict["left"] 
+                back_4 = dict["right"]
+                back_5 = dict["leaf"]
+                back_6 = dict["label"]
+                #--------------------------------------------
+                dict["attribute"]=[]
+                dict["value"]=[]
+                dict["left"] ={}
+                dict["right"]={}
+                dict["leaf"] = True
+                dict["label"]= [y[i]]
+                if evaluation(tree, x_test, y_test) > init_evaluation:
+                    pass
+                else:
+                    dict["attribute"]   =back_1
+                    dict["value"]       =back_2
+                    dict["left"]        =back_3
+                    dict["right"]       =back_4
+                    dict["leaf"]        =back_5
+                    dict["label"]       =back_6
+                print("after: ", count_keys(tree))
+                
+                
+    #     return train_set
+    elif (dict["left"]["leaf"] == True and dict["right"]["leaf"] != True):
+        subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
+    elif (dict["right"]["leaf"] == True and dict["left"]["leaf"] != True):
+        subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
+    else:
+        subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
+        subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
+   
+
+
+
+def pruning(dict, traning_set):
+    print(subset(dict,traning_set))
+
+before = evaluation(tree, x_test, y_test)
+while(True):
+    ini = evaluation(tree, x_test, y_test)
+    pruning(tree, train_set)
+    if evaluation(tree, x_test, y_test) == ini:
+        break
 # print(predict(tree,[-64., -56., -61., -66., -71., -82., -81.]))
-print("clean set accuracy: ", evaluation(tree, x_test, y_test))
+print("set accuracy before pruning: ", before)
+print("set accuracy after pruning: ", evaluation(tree, x_test, y_test))
 
 
 
