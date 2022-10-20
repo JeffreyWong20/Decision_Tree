@@ -61,7 +61,7 @@ def plot_tree(dictree):
         if len(depth_node_dict[d]) >= max_row_length:
             max_row_length = len(depth_node_dict[d])
     plt.figure(figsize=(50, 25))
-    height=0
+    height=-10
     base_x_incre=1
     max_width=max_row_length*base_x_incre
     for d in depth_node_dict:
@@ -85,7 +85,7 @@ def plot_tree(dictree):
                 # plt.plot([x, x + d], [y, y - extend])
                 plt.plot([node_info_dict[node_id]["pos"][0], left_pos[0]], [node_info_dict[node_id]["pos"][1], left_pos[1]])
                 plt.plot([node_info_dict[node_id]["pos"][0], right_pos[0]], [node_info_dict[node_id]["pos"][1], right_pos[1]])
-    plt.xlim(-20, 100)
+    plt.xlim(-max_width*0.0, max_width)
     plt.ylim(height-20, 20)
     plt.savefig('tree.png')
     plt.show()
