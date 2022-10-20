@@ -13,7 +13,7 @@ tree = {
 
 def plot_tree_rec(dictree, d, x, y, depth):
     if dictree["leaf"]==True:
-        plt.text(x, y, dictree["label"][0], size=1, ha="center", va="center",
+        plt.text(x, y, dictree["label"][0], size=5, ha="center", va="center",
         # bbox=dict(facecolor='none', edgecolor='red', pad=4.0))
         bbox=dict(boxstyle="round",
                    ec=(1., 0.5, 0.5),
@@ -21,7 +21,7 @@ def plot_tree_rec(dictree, d, x, y, depth):
                    ))
         return
     else:
-        plt.text(x, y, "X"+str(dictree["attribute"])+">"+str(dictree["value"]), size=1, ha="center", va="center",
+        plt.text(x, y, "X"+str(dictree["attribute"])+">"+str(dictree["value"]), size=5, ha="center", va="center",
         # bbox=dict(facecolor='none', edgecolor='blue', pad=4.0)
         bbox=dict(boxstyle="round",
                    ec=(1., 0.5, 0.5),
