@@ -113,6 +113,9 @@ def plot_tree(dictree):
 #     plot_recur(tree, dict, '')
 #     tree.show()
 
+
+
+
 # def plot_tree_rec(dictree, d, x, y, depth, extend=20):
 #     if dictree["leaf"] == True:
 #         plt.text(x, y, int(dictree["label"][0]), size=5, ha="center", va="center",
@@ -129,7 +132,7 @@ def plot_tree(dictree):
 #                            ec=(1., 0.5, 0.5),
 #                            #    fc=(1., 0.8, 0.8),
 #                            ))
-#
+
 #     plt.plot([x, x + d], [y, y - extend])
 #     plt.plot([x, x - d], [y, y - extend])
 #     new_d = max([d / (2 - depth / a_max_depth), 0.15])

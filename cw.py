@@ -186,7 +186,7 @@ class DecisionTree:
     def size(self):
         return count_keys(self.tree, counter=0)
     
-
+    # NOT WORKING CURRENTLY
     def subset(self, dict, train_set):
         # train_x = train_set[:,(0,1,2,3,4,5,6)]
         # train_y = train_set[:,-1]
@@ -235,17 +235,9 @@ class DecisionTree:
             self.subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
             self.subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
    
+    # NOT WORKING CURRENTLY
     def pruning(self, traning_set):
         print(self.subset(self.tree, traning_set))
-
-
-# def evaluation(dict, testset, test_label):
-#         count = 0
-#         for i,instance in enumerate(testset):
-#             if(predict(dict,instance)[0]==test_label[i]):
-#                 count+=1
-#         # print(test_label.shape, count)
-#         return count/test_label.shape[0]
 
 
 # def evaluation(dict, testset, test_label):
@@ -270,14 +262,14 @@ dataset_clean = np.loadtxt(dataset_path_clean)
 
 seed = 60012
 rg = default_rng(seed)
-# x=dataset_noisy[:,(0,1,2,3,4,5,6)]
-# np.savetxt('train_x_noisy.out', x, delimiter=',')
-# y=dataset_noisy[:,-1]
-# np.savetxt('train_y_noisy.out', y, delimiter=',')
-x=dataset_clean[:,(0,1,2,3,4,5,6)]
-np.savetxt('test_x_clean.out', x, delimiter=',')
-y=dataset_clean[:,-1]
-np.savetxt('test_y_clean.out', y, delimiter=',')
+x=dataset_noisy[:,(0,1,2,3,4,5,6)]
+np.savetxt('train_x_noisy.out', x, delimiter=',')
+y=dataset_noisy[:,-1]
+np.savetxt('train_y_noisy.out', y, delimiter=',')
+# x=dataset_clean[:,(0,1,2,3,4,5,6)]
+# np.savetxt('test_x_clean.out', x, delimiter=',')
+# y=dataset_clean[:,-1]
+# np.savetxt('test_y_clean.out', y, delimiter=',')
 
 
 x_train, x_test, y_train, y_test = split_dataset(x, y, test_proportion=0.2, random_generator=rg)
@@ -295,6 +287,15 @@ print(evaluation)
 plot_tree(Decision_Tree.tree)
 
 tree = Decision_Tree.tree
+
+def evaluation(dict, testset, test_label):
+        count = 0
+        for i,instance in enumerate(testset):
+            if(predict_single(dict,instance)[0]==test_label[i]):
+                count+=1
+        # print(test_label.shape, count)
+        return count/test_label.shape[0]
+
 def subset(dict, train_set):
     # train_x = train_set[:,(0,1,2,3,4,5,6)]
     # train_y = train_set[:,-1]
@@ -412,9 +413,6 @@ def subset(dict, train_set):
 def pruning(dict, traning_set):
     print(subset(dict,traning_set))
 
-
-
-tree = DecisionTree(tree)
 before = evaluation(tree, x_test, y_test)
 while(True):
     ini = evaluation(tree, x_test, y_test)
