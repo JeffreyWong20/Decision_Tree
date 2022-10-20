@@ -189,8 +189,8 @@ def evaluation(dict, testset, test_label):
 
 
 
-dataset_path_clean = "/Users/jeffreywong/Desktop/Decision_Tree/intro2ML-coursework1/wifi_db/clean_dataset.txt"
-dataset_path_noisy = "/Users/jeffreywong/Desktop/Decision_Tree/intro2ML-coursework1/wifi_db/noisy_dataset.txt"
+dataset_path_clean = "./intro2ML-coursework1/wifi_db/clean_dataset.txt"
+dataset_path_noisy = "./intro2ML-coursework1/wifi_db/noisy_dataset.txt"
 # print(np.loadtxt(dataset_path_clean).shape)
 # dataset = np.loadtxt(dataset_path_clean)
 
@@ -221,7 +221,7 @@ train_set = np.asarray(train_set)
 # print(train_set)
 # print(train_set.shape)
 tree = decision_tree_learning(train_set,0)
-plot_tree(tree, 5000, 300)
+plot_tree(tree, 50, 1200)
 # print(tree)
 
 
