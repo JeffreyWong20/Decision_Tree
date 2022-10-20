@@ -292,7 +292,7 @@ evaluation = Decision_Tree.evaluation(x_test,y_test)
 print("------------------CLASS---------------")
 print(evaluation)
 
-plot_tree(Decision_Tree.tree, 5000, 300)
+plot_tree(Decision_Tree.tree)
 
 tree = Decision_Tree.tree
 def subset(dict, train_set):
