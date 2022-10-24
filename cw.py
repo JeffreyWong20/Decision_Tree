@@ -1,5 +1,6 @@
 from cgi import test
 from cmath import nan
+import enum
 from itertools import count
 import numpy as np
 import matplotlib as plt
@@ -19,6 +20,55 @@ def split_dataset(x, y, test_proportion, random_generator=default_rng()):
     x_test = x[shuffled_indices[n_train:]]
     y_test = y[shuffled_indices[n_train:]]
     return (x_train, x_test, y_train, y_test)
+
+def k_fold_split(n_splits, n_instances, random_generator=default_rng()):
+
+    # generate a random permutation of indices from 0 to n_instances
+    shuffled_indices = random_generator.permutation(n_instances)
+
+    # split shuffled indices into almost equal sized splits
+    split_indices = np.array_split(shuffled_indices, n_splits)
+
+    return split_indices
+
+def train_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
+    # split the dataset into k splits
+    split_indices = k_fold_split(n_folds, n_instances, random_generator)
+
+    folds = []
+    for k in range(n_folds):
+        # pick k as test
+        test_indices = split_indices[k]
+
+        # combine remaining splits as train
+        # this solution is fancy and worked for me
+        # feel free to use a more verbose solution that's more readable
+        train_indices = np.hstack(split_indices[:k] + split_indices[k+1:])
+
+        folds.append([train_indices, test_indices])
+
+    return folds
+
+def train_val_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
+    # split the dataset into k splits
+    split_indices = k_fold_split(n_folds, n_instances, random_generator)
+
+    folds = []
+    for k in range(n_folds):
+        # pick k as test, and k+1 as validation (or 0 if k is the final split)
+        test_indices = split_indices[k]
+        val_indices = split_indices[(k+1) % n_folds]
+
+        # concatenate remaining splits for training
+        train_indices = np.zeros((0, ), dtype=np.int)
+        for i in range(n_folds):
+            # concatenate to training set if not validation or test
+            if i not in [k, (k+1) % n_folds]:
+                train_indices = np.hstack([train_indices, split_indices[i]])
+
+        folds.append([train_indices, val_indices, test_indices])
+        
+    return folds
 
 def find_prob(dataset): # compute the probability of each class 
     prob_array = []
@@ -239,18 +289,10 @@ class DecisionTree:
     def pruning(self, traning_set):
         print(self.subset(self.tree, traning_set))
 
-
-# def evaluation(dict, testset, test_label):
-#     from sklearn.metrics import f1_score
- 
-#     y_true = test_label
-#     y_pred = []
-#     for i,instance in enumerate(testset):
-#         y_pred.append(predict(dict,instance)[0])
-
-#     # print()
-#     # print(f1_score(y_true, y_pred, average='macro'))
-#     return f1_score(y_true, y_pred, average='weighted')
+def evaluate(test_db, trained_tree):
+    y_gold = test_db[:,-1]
+    predictions = trained_tree.predict(test_db[:,(0,1,2,3,4,5,6)])
+    return np.sum(predictions==y_gold)/len(y_gold)
 
 
 
@@ -260,32 +302,65 @@ dataset_path_noisy = "/Users/jeffreywong/Desktop/Decision_Tree/intro2ML-coursewo
 dataset_noisy = np.loadtxt(dataset_path_noisy)
 dataset_clean = np.loadtxt(dataset_path_clean)
 
+dataset = dataset_clean #dataset_noisy #
 seed = 60012
 rg = default_rng(seed)
-x=dataset_noisy[:,(0,1,2,3,4,5,6)]
-np.savetxt('train_x_noisy.out', x, delimiter=',')
-y=dataset_noisy[:,-1]
-np.savetxt('train_y_noisy.out', y, delimiter=',')
-# x=dataset_clean[:,(0,1,2,3,4,5,6)]
-# np.savetxt('test_x_clean.out', x, delimiter=',')
-# y=dataset_clean[:,-1]
-# np.savetxt('test_y_clean.out', y, delimiter=',')
+x=dataset[:,(0,1,2,3,4,5,6)]
+y=dataset[:,-1]
+
+# Without cross validation
+# x_train, x_test, y_train, y_test = split_dataset(x, y, test_proportion=0.2, random_generator=rg)
+# train_set = np.insert(x_train, x_train.shape[1], y_train, axis=1)
+# train_set = np.asarray(train_set)
+# Decision_Tree = DecisionTree({})
+# Decision_Tree.fit(x_train,y_train)
+# evaluation = Decision_Tree.evaluation(x_test, y_test)
+# print("------------------CLASS---------------")
+# print(evaluation)
+# plot_tree(Decision_Tree.tree)
+dataset_name = ["Clean_set", "Noisy_set"]
+for name_index,dataset_ in enumerate([dataset_clean,dataset_noisy]):
+    dataset = dataset_
+    # dataset = dataset_clean #dataset_noisy #
+    # seed = 60012
+    # rg = default_rng(seed)
+    x=dataset[:,(0,1,2,3,4,5,6)]
+    y=dataset[:,-1]
+    n_folds = 10
+    accuracies = np.zeros((n_folds, ))
+    accuracies_evaluate_function = np.zeros((n_folds,))
+    for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(x), rg)):
+        x_train = x[train_indices, :]
+        y_train = y[train_indices]
+        x_test = x[test_indices, :]
+        y_test = y[test_indices]
+
+        Decision_Tree = DecisionTree({})
+        Decision_Tree.fit(x_train, y_train)
+        predictions = Decision_Tree.predict(x_test)
+        evaluation = Decision_Tree.evaluation(x_test, y_test)
+
+        # task : implement evaluation function
+        test_db = np.insert(x_test, x_test.shape[1], y_test, axis=1)
+        evaluate_function = evaluate(test_db, Decision_Tree)
+
+        accuracies_evaluate_function[i] = evaluate_function
+        accuracies[i] = evaluation
+    print("*******************************************************")
+    print(dataset_name[name_index])
+    print("\tACC                     ", accuracies)
+    print("\tACC by evaluate_function", accuracies)
+    print("\tACC Mean:               ", accuracies.mean())
+    print("\tACC Std:                ", accuracies.std())
 
 
-x_train, x_test, y_train, y_test = split_dataset(x, y, test_proportion=0.2, random_generator=rg)
-#x_train, x_test, y_train, y_test = dataset_noisy[:,(0,1,2,3,4,5,6)], dataset_clean[:,(0,1,2,3,4,5,6)], dataset_noisy[:,-1], dataset_clean[:,-1]
 
-train_set = np.insert(x_train, x_train.shape[1], y_train, axis=1)
-train_set = np.asarray(train_set)
 
-Decision_Tree = DecisionTree({})
-Decision_Tree.fit(x_train,y_train)
-evaluation = Decision_Tree.evaluation(x_test,y_test)
-print("------------------CLASS---------------")
-print(evaluation)
 
-plot_tree(Decision_Tree.tree)
 
+# ------------------------------------------------------------
+# Below is the pruning section
+# ------------------------------------------------------------
 tree = Decision_Tree.tree
 
 def evaluation(dict, testset, test_label):
@@ -336,70 +411,6 @@ def subset(dict, train_set):
                     dict["leaf"]        =back_5
                     dict["label"]       =back_6
                 print("after: ", count_keys(tree))
-
-
-
-        # # -----------------------------------------------------------------------------------------------------------
-        # print("before left: ", count_keys(tree))
-        # init_evaluation = evaluation(tree, x_test, y_test)
-
-        # back_1 = dict["attribute"]
-        # back_2 = dict["value"]
-        # back_3 = dict["left"] 
-        # back_4 = dict["right"]
-        # back_5 = dict["leaf"]
-        # back_6 = dict["label"]
-        # #--------------------------------------------
-        # dict["label"]= dict["left"]["label"]
-        # dict["attribute"]=[]
-        # dict["value"]=[]
-        # dict["left"] ={}
-        # dict["right"]={}
-        # dict["leaf"] = True
-        # # if evaluation(tree, x_test, y_test) >= init_evaluation:
-        # if evaluation(tree, x_test, y_test) >= init_evaluation:
-        #     pass
-        # else:
-        #     dict["attribute"]   =back_1
-        #     dict["value"]       =back_2
-        #     dict["left"]        =back_3
-        #     dict["right"]       =back_4
-        #     dict["leaf"]        =back_5
-        #     dict["label"]       =back_6
-        # print("after left: ", count_keys(tree))
-        # # -----------------------------------------------------------------------------------------------------------
-        # print("before right: ", count_keys(tree))
-        # init_evaluation = evaluation(tree, x_test, y_test)
-
-        # back_1 = dict["attribute"]
-        # back_2 = dict["value"]
-        # back_3 = dict["left"] 
-        # back_4 = dict["right"]
-        # back_5 = dict["leaf"]
-        # back_6 = dict["label"]
-        # #--------------------------------------------
-        # dict["label"]= dict["right"]["label"]
-        # dict["attribute"]=[]
-        # dict["value"]=[]
-        # dict["left"] ={}
-        # dict["right"]={}
-        # dict["leaf"] = True
-        # # if evaluation(tree, x_test, y_test) >= init_evaluation:
-        # if evaluation(tree, x_test, y_test) >= init_evaluation:
-        #     pass
-        # else:
-        #     dict["attribute"]   =back_1
-        #     dict["value"]       =back_2
-        #     dict["left"]        =back_3
-        #     dict["right"]       =back_4
-        #     dict["leaf"]        =back_5
-        #     dict["label"]       =back_6
-        # print("after right: ", count_keys(tree))
-
-
-
-                
-                
                 
     #     return train_set
     elif (dict["left"]["leaf"] == True and dict["right"]["leaf"] != True):
@@ -413,64 +424,14 @@ def subset(dict, train_set):
 def pruning(dict, traning_set):
     print(subset(dict,traning_set))
 
-before = evaluation(tree, x_test, y_test)
-while(True):
-    ini = evaluation(tree, x_test, y_test)
-    pruning(tree, train_set)
-    if evaluation(tree, x_test, y_test) == ini:
-        break
-# print(predict(tree,[-64., -56., -61., -66., -71., -82., -81.]))
-print("set accuracy before pruning: ", before)
-print("set accuracy after pruning: ", evaluation(tree, x_test, y_test))
+# before = evaluation(tree, x_test, y_test)
+# while(True):
+#     ini = evaluation(tree, x_test, y_test)
+#     pruning(tree, train_set)
+#     if evaluation(tree, x_test, y_test) == ini:
+#         break
+# # print(predict(tree,[-64., -56., -61., -66., -71., -82., -81.]))
+# print("set accuracy before pruning: ", before)
+# print("set accuracy after pruning: ", evaluation(tree, x_test, y_test))
 
 # print("set accuracy after pruning: ", evaluation_accuracy(tree, x_test, y_test))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def decision_tree_learning(dataset, depth, available_feature_set):
-#     # initial entropy
-#     feature_number = dataset.shape[1]-1
-
-#     feature_init_entropy = find_split(2,dataset,0)[0]
-#     for i in range(feature_number):
-#         if feature_init_entropy>=find_split(2,dataset,i)[0]:
-#             split_feature_number = i
-#         print(find_split(2,dataset,i)[0])
-#     print("feature number:", split_feature_number, " return in the lowest entropy as: ", find_split(2,dataset,split_feature_number)[0], " by spliting at: ", find_split(2,dataset,split_feature_number)[1])
-    
-#     feature_name = "X"+str(available_feature_set[split_feature_number])
-
-
-#     available_feature_set = np.delete(available_feature_set, split_feature_number)
-#     print(available_feature_set)
-#     if(depth>limit): return #TODO: return type
-#     dataset_left = dataset[dataset[:,split_feature_number]<find_split(2,dataset,split_feature_number)[1]]
-#     dataset_right = dataset[dataset[:,split_feature_number]>=find_split(2,dataset,split_feature_number)[1]]
-#     dataset_left = dataset_left[:,available_feature_set]
-#     dataset_right = dataset_right[:,available_feature_set]
-#     print(dataset_left.shape)
-#     dataset_right = dataset
-    
-#     # decision_tree_learning(dataset,depth+1,available_feature_set)
-#     # decision_tree_learning(dataset,depth+1,available_feature_set)
-
-#     tree["attribute"].append(split_feature_number)
-#     tree["value"].append(feature_name)
