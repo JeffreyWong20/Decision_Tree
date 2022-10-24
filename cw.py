@@ -289,6 +289,8 @@ class DecisionTree:
     def pruning(self, traning_set):
         print(self.subset(self.tree, traning_set))
 
+
+# Section3: Implement a evaluation function : evaluate(test_db, trained_tree)
 def evaluate(test_db, trained_tree):
     y_gold = test_db[:,-1]
     predictions = trained_tree.predict(test_db[:,(0,1,2,3,4,5,6)])
@@ -318,6 +320,10 @@ y=dataset[:,-1]
 # print("------------------CLASS---------------")
 # print(evaluation)
 # plot_tree(Decision_Tree.tree)
+
+# Section 3: 
+#   10-fold cross validation on both the clean and noisy datasets.
+#   Slightly different trees will be generated ——> evaluate all the trees accuracy.
 dataset_name = ["Clean_set", "Noisy_set"]
 for name_index,dataset_ in enumerate([dataset_clean,dataset_noisy]):
     dataset = dataset_
