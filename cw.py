@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib as plt
 from numpy.random import default_rng
 from plot_tree import plot_tree 
+import evaluation as metrixs
 import sys
 #config
 limit = 10000
@@ -58,12 +59,13 @@ def train_val_test_k_fold(n_folds, n_instances, random_generator=default_rng()):
         # pick k as test, and k+1 as validation (or 0 if k is the final split)
         test_indices = split_indices[k]
         val_indices = split_indices[(k+1) % n_folds]
+        val_indices = np.hstack([val_indices, split_indices[(k+1) % n_folds]])
 
         # concatenate remaining splits for training
         train_indices = np.zeros((0, ), dtype=np.int)
         for i in range(n_folds):
             # concatenate to training set if not validation or test
-            if i not in [k, (k+1) % n_folds]:
+            if i not in [k, (k+1) % n_folds, (k+2) % n_folds]: # if i not in [k, (k+1) % n_folds]:
                 train_indices = np.hstack([train_indices, split_indices[i]])
 
         folds.append([train_indices, val_indices, test_indices])
@@ -225,13 +227,13 @@ class DecisionTree:
                     model = model["right"]
         return np.asarray(y)
 
-    def evaluation(self, testset, test_label):
+    def evaluation(self, testset, y_gold):
         count = 0
          # print(self.predict(testset))
         for i,instance in enumerate(self.predict(testset)):
-            if(instance == test_label[i]):
+            if(instance == y_gold[i]):
                 count+=1
-        return count/test_label.shape[0]
+        return count/y_gold.shape[0]
     
     def size(self):
         return count_keys(self.tree, counter=0)
@@ -311,15 +313,15 @@ x=dataset[:,(0,1,2,3,4,5,6)]
 y=dataset[:,-1]
 
 # Without cross validation
-# x_train, x_test, y_train, y_test = split_dataset(x, y, test_proportion=0.2, random_generator=rg)
-# train_set = np.insert(x_train, x_train.shape[1], y_train, axis=1)
-# train_set = np.asarray(train_set)
-# Decision_Tree = DecisionTree({})
-# Decision_Tree.fit(x_train,y_train)
-# evaluation = Decision_Tree.evaluation(x_test, y_test)
-# print("------------------CLASS---------------")
-# print(evaluation)
-# plot_tree(Decision_Tree.tree)
+x_train, x_test, y_train, y_test = split_dataset(x, y, test_proportion=0.2, random_generator=rg)
+train_set = np.insert(x_train, x_train.shape[1], y_train, axis=1)
+train_set = np.asarray(train_set)
+Decision_Tree = DecisionTree({})
+Decision_Tree.fit(x_train,y_train)
+evaluation = Decision_Tree.evaluation(x_test, y_test)
+print("------------------CLASS---------------")
+print(evaluation)
+plot_tree(Decision_Tree.tree)
 
 # Section 3: 
 #   10-fold cross validation on both the clean and noisy datasets.
@@ -334,7 +336,9 @@ for name_index,dataset_ in enumerate([dataset_clean,dataset_noisy]):
     y=dataset[:,-1]
     n_folds = 10
     accuracies = np.zeros((n_folds, ))
+    confusions = np.zeros((n_folds, ))
     accuracies_evaluate_function = np.zeros((n_folds,))
+    confusion_matrix_sum=[]
     for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(x), rg)):
         x_train = x[train_indices, :]
         y_train = y[train_indices]
@@ -351,14 +355,31 @@ for name_index,dataset_ in enumerate([dataset_clean,dataset_noisy]):
         evaluate_function = evaluate(test_db, Decision_Tree)
 
         accuracies_evaluate_function[i] = evaluate_function
+        #-----------------------------------------------
         accuracies[i] = evaluation
+        #-----------------------------------------------
+        # confusion_matrix(predict_label, test_label, label_classes)
+        confusion = metrixs.confusion_matrix(predictions, y_test,  np.unique(np.concatenate((y_train, y_test))))
+        # print(confusion)
+        if type(confusion_matrix_sum) == list:
+            confusion_matrix_sum=confusion
+        else:
+            confusion_matrix_sum=np.add(confusion,confusion_matrix_sum)
+    confusion_matrix_avg=confusion_matrix_sum/10
+    precision = metrixs.get_precision(confusion_matrix_avg)
+    recall = metrixs.get_recall(confusion_matrix_avg)
+    f1 = metrixs.get_f1_measure(precision,recall)
     print("*******************************************************")
+    print(confusion_matrix_sum/10)
     print(dataset_name[name_index])
     print("\tACC                     ", accuracies)
-    print("\tACC by evaluate_function", accuracies)
+    print("\tACC by evaluate_function", metrixs.get_accuracy(confusion_matrix_avg))
+    print("\tprecision               ", precision)
+    print("\trecall                  ", recall)
+    print("\tf1_measure              ", f1)
+
     print("\tACC Mean:               ", accuracies.mean())
     print("\tACC Std:                ", accuracies.std())
-
 
 
 
@@ -367,77 +388,160 @@ for name_index,dataset_ in enumerate([dataset_clean,dataset_noisy]):
 # ------------------------------------------------------------
 # Below is the pruning section
 # ------------------------------------------------------------
-tree = Decision_Tree.tree
+x=dataset[:,(0,1,2,3,4,5,6)]
+y=dataset[:,-1]
+n_folds = 10
+n_instances = len(x)
 
-def evaluation(dict, testset, test_label):
-        count = 0
-        for i,instance in enumerate(testset):
-            if(predict_single(dict,instance)[0]==test_label[i]):
-                count+=1
-        # print(test_label.shape, count)
-        return count/test_label.shape[0]
+for i, (train_indices, val_indices, test_indices) in enumerate(train_val_test_k_fold(n_folds, len(x), rg)):
+    train_set = dataset[train_indices, :]
+    validation_set = dataset[val_indices, :]
+    test_set = dataset[test_indices, :]
 
-def subset(dict, train_set):
-    # train_x = train_set[:,(0,1,2,3,4,5,6)]
-    # train_y = train_set[:,-1]
-    # print(dict["left"].keys())
-    # print(dict["left"]["leaf"])
-    if (dict["left"]["leaf"] == True and dict["right"]["leaf"] == True) :
-        print("--------------------------------")
-        print(train_set)
-        y = np.bincount(train_set[:,-1].astype(int)) 
-        maximum = max(y)
-        for i in range(len(y)):
-            if y[i] == maximum: #TODO
-                # print(i, end=" ") # we will replace the node with a leaf with this label
-                print("before: ", count_keys(tree))
-                init_evaluation = evaluation(tree, x_test, y_test)
+    x_train = x[train_indices, :]
+    y_train = y[train_indices]
+    x_validation = x[val_indices, :]
+    y_validation = y[val_indices]
+    x_test = x[test_indices, :]
+    y_test = y[test_indices]
 
-                back_1 = dict["attribute"]
-                back_2 = dict["value"]
-                back_3 = dict["left"] 
-                back_4 = dict["right"]
-                back_5 = dict["leaf"]
-                back_6 = dict["label"]
-                #--------------------------------------------
-                dict["attribute"]=[]
-                dict["value"]=[]
-                dict["left"] ={}
-                dict["right"]={}
-                dict["leaf"] = True
-                dict["label"]= [y[i]]
-                # if evaluation(tree, x_test, y_test) >= init_evaluation:
-                if evaluation(tree, x_test, y_test) >= init_evaluation:
-                    pass
+    Decision_Tree = DecisionTree({})
+    Decision_Tree.fit(x_train, y_train)
+    tree = Decision_Tree.tree
+    print("-------------------------------------------------")
+    print("Test: \t", Decision_Tree.evaluation(x_test, y_test), "| Validation: \t", Decision_Tree.evaluation(x_validation, y_validation), "| Train: \t", Decision_Tree.evaluation(x_train, y_train))
+    def evaluate_dict_form(test_db, dict_form_tree):
+        y_predictions = np.zeros((len(test_db), ), dtype=int)  
+        y_gold        = test_db[:,-1]
+        for i,testcase in enumerate(test_db):
+            model = dict_form_tree
+            while(True):
+                if model["leaf"]==True:
+                    y_predictions[i] = model["label"][0]
+                    break
+                elif (testcase[model["attribute"]]<=model["value"]):
+                    model = model["left"]
                 else:
-                    dict["attribute"]   =back_1
-                    dict["value"]       =back_2
-                    dict["left"]        =back_3
-                    dict["right"]       =back_4
-                    dict["leaf"]        =back_5
-                    dict["label"]       =back_6
-                print("after: ", count_keys(tree))
-                
-    #     return train_set
-    elif (dict["left"]["leaf"] == True and dict["right"]["leaf"] != True):
-        subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
-    elif (dict["right"]["leaf"] == True and dict["left"]["leaf"] != True):
-        subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
-    else:
-        subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
-        subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
-   
-def pruning(dict, traning_set):
-    print(subset(dict,traning_set))
+                    model = model["right"]
+        y = np.asarray(y_predictions)
+        return np.sum(y==y_gold) / len(y)
 
-# before = evaluation(tree, x_test, y_test)
-# while(True):
-#     ini = evaluation(tree, x_test, y_test)
-#     pruning(tree, train_set)
-#     if evaluation(tree, x_test, y_test) == ini:
-#         break
-# # print(predict(tree,[-64., -56., -61., -66., -71., -82., -81.]))
-# print("set accuracy before pruning: ", before)
-# print("set accuracy after pruning: ", evaluation(tree, x_test, y_test))
+    def subset(dict, train_set):
+        if (dict["left"]["leaf"] == True and dict["right"]["leaf"] == True) :
+            #print("--------------------------------")
+            # print(train_set)
+            y = np.bincount(train_set[:,-1].astype(int)) 
+            maximum = max(y)
+            for i in range(len(y)):
+                if y[i] == maximum: #TODO
+                    # print(i, end=" ") # we will replace the node with a leaf with this label
+                    init_validation_error = 1-evaluate_dict_form(validation_set,tree)
+                    #print("before: ", count_keys(tree), "\t init_validation_error: \t", init_validation_error)
+                    back_1 = dict["attribute"]
+                    back_2 = dict["value"]
+                    back_3 = dict["left"] 
+                    back_4 = dict["right"]
+                    back_5 = dict["leaf"]
+                    back_6 = dict["label"]
+                    dict["attribute"]=[]
+                    dict["value"]=[]
+                    dict["left"] ={}
+                    dict["right"]={}
+                    dict["leaf"] = True
+                    dict["label"]= [y[i]]
+                    #print("after: ", count_keys(tree), "\t validation_error: \t", 1-evaluate_dict_form(validation_set,tree))
 
-# print("set accuracy after pruning: ", evaluation_accuracy(tree, x_test, y_test))
+                    # if evaluation(tree, x_test, y_test) >= init_evaluation:
+                    if 1-evaluate_dict_form(validation_set,tree) <= init_validation_error:
+                        pass
+                    else:
+                        dict["attribute"]   =back_1
+                        dict["value"]       =back_2
+                        dict["left"]        =back_3
+                        dict["right"]       =back_4
+                        dict["leaf"]        =back_5
+                        dict["label"]       =back_6
+                    
+                    
+        #     return train_set
+        elif (dict["left"]["leaf"] == True and dict["right"]["leaf"] != True):
+            subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
+        elif (dict["right"]["leaf"] == True and dict["left"]["leaf"] != True):
+            subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
+        else:
+            subset(dict["left"],train_set[train_set[:,dict["attribute"]]<=dict["value"]])
+            subset(dict["right"],train_set[train_set[:,dict["attribute"]]>dict["value"]])
+    
+    def pruning(dict, traning_set):
+        subset(dict,traning_set)
+
+    # pruned decision_tree
+    pruned_tree = DecisionTree(tree)
+
+    # dataset = dataset_noisy
+    # # dataset = dataset_clean #dataset_noisy #
+    # # seed = 60012
+    # # rg = default_rng(seed)
+    # x=dataset[:,(0,1,2,3,4,5,6)]
+    # y=dataset[:,-1]
+    # n_folds = 10
+    # accuracies = np.zeros((n_folds, ))
+    # confusions = np.zeros((n_folds, ))
+    # accuracies_evaluate_function = np.zeros((n_folds,))
+    # confusion_matrix_sum=[]
+    # for i, (train_indices, test_indices) in enumerate(train_test_k_fold(n_folds, len(x), rg)):
+    #     x_train = x[train_indices, :]
+    #     y_train = y[train_indices]
+    #     x_test = x[test_indices, :]
+    #     y_test = y[test_indices]
+
+    #     Decision_Tree = DecisionTree({})
+    #     Decision_Tree.fit(x_train, y_train)
+    #     predictions = Decision_Tree.predict(x_test)
+    #     evaluation = Decision_Tree.evaluation(x_test, y_test)
+
+    #     # task : implement evaluation function
+    #     test_db = np.insert(x_test, x_test.shape[1], y_test, axis=1)
+    #     evaluate_function = evaluate(test_db, Decision_Tree)
+
+    #     accuracies_evaluate_function[i] = evaluate_function
+    #     #-----------------------------------------------
+    #     accuracies[i] = evaluation
+    #     #-----------------------------------------------
+    #     # confusion_matrix(predict_label, test_label, label_classes)
+    #     confusion = metrixs.confusion_matrix(predictions, y_test,  np.unique(np.concatenate((y_train, y_test))))
+    #     # print(confusion)
+    #     if type(confusion_matrix_sum) == list:
+    #         confusion_matrix_sum=confusion
+    #     else:
+    #         confusion_matrix_sum=np.add(confusion,confusion_matrix_sum)
+    # confusion_matrix_avg=confusion_matrix_sum/10
+    # precision = metrixs.get_precision(confusion_matrix_avg)
+    # recall = metrixs.get_recall(confusion_matrix_avg)
+    # f1 = metrixs.get_f1_measure(precision,recall)
+    # print("*******************************************************")
+    # print(confusion_matrix_sum/10)
+    # print(dataset_name[name_index])
+    # print("\tACC                     ", accuracies)
+    # print("\tACC by evaluate_function", metrixs.get_accuracy(confusion_matrix_avg))
+    # print("\tprecision               ", precision)
+    # print("\trecall                  ", recall)
+    # print("\tf1_measure              ", f1)
+
+    # print("\tACC Mean:               ", accuracies.mean())
+    # print("\tACC Std:                ", accuracies.std())
+
+
+
+
+
+    before_test = evaluate_dict_form(test_set,tree)
+    before_valid = evaluate_dict_form(validation_set,tree)
+    while(True):
+        ini = evaluate_dict_form(test_set,tree)
+        pruning(tree, train_set)
+        if evaluate_dict_form(test_set,tree) == ini:
+            break
+    print("FOLD: ", i)
+    print("\taccuracy before pruning: ", before_test, " ",before_valid)
+    print("\taccuracy after  pruning: ", evaluate_dict_form(test_set,tree), " ", evaluate_dict_form(validation_set,tree))

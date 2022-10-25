@@ -32,13 +32,13 @@ def get_node_info(dictree, depth=0):
         node_info_dict[dictree["id"]] = {"leaf": False,
                                          "left": dictree["left"]["id"],
                                          "right": dictree["right"]["id"],
-                                         "label":"X" + str(dictree["attribute"]) + ">" + str(dictree["value"])
+                                         "label":"[X" + str(dictree["attribute"]) + ">" + str(dictree["value"])+"]"
                                          }
     else:
         node_info_dict[dictree["id"]] = {"leaf": True,
                                          "left": {},
                                          "right": {},
-                                         "label":str(int(dictree["label"]))
+                                         "label":"leaf:"+str(int(dictree["label"]))
                                          }
 
 def sort_by_key(d):
