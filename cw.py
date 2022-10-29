@@ -320,7 +320,7 @@ dataset_path_noisy = DATASET_PATH_NOISY
 dataset_noisy = np.loadtxt(dataset_path_noisy)
 dataset_clean = np.loadtxt(dataset_path_clean)
 
-dataset = dataset_noisy #dataset_noisy #
+dataset = dataset_clean #dataset_noisy #
 seed = RANDOM_SEED
 rg = default_rng(seed)
 x=dataset[:,(0,1,2,3,4,5,6)]
@@ -335,7 +335,7 @@ Decision_Tree.fit(x_train,y_train)
 evaluation = Decision_Tree.evaluation(x_test, y_test)
 print("------------------CLASS---------------")
 print(evaluation)
-if PLOT_TREE:plot_tree(Decision_Tree.tree)
+# if PLOT_TREE:plot_tree(Decision_Tree.tree)
 
 # Section 3: 
 #   10-fold cross validation on both the clean and noisy datasets.
@@ -392,7 +392,7 @@ for name_index,dataset_ in enumerate([dataset_clean,dataset_noisy]):
     print("\tTree Node Number:       ", count_node(Decision_Tree.tree))
 
 
-dataset = dataset_clean
+dataset = dataset_noisy
 x=dataset[:,(0,1,2,3,4,5,6)]
 y=dataset[:,-1]
 n_instances = len(x)
@@ -432,6 +432,8 @@ print("accuracy After pruning: \tTest_evl\tVal_evl\t\tSize_after_pruning")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++")
 accuracies_before = np.zeros((n_outer_folds*n_inner_folds, ))
 accuracies_prunned = np.zeros((n_outer_folds*n_inner_folds, ))
+depth_tree = np.zeros((n_outer_folds*n_inner_folds, ))
+depth_tree_prunned = np.zeros((n_outer_folds*n_inner_folds, ))
 confusions_before_sum = []
 confusions_prunned_sum = []
 for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_folds, len(x), rg)):
@@ -504,41 +506,46 @@ for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_f
                 # print("--------------------------------")
                 # print(train_set)
                 # print(dict)
-                y = np.bincount(train_set[:,-1].astype(int)) 
-                maximum = max(y)
-                for i in range(len(y)):
-                    if y[i] == maximum: #TODO
-                        # print(i, end=" ") # we will replace the node with a leaf with this label
-                        init_validation_error = 1-evaluate_dict_form(validation_set,tree)
-                        #print("before: ", count_keys(tree), "\t init_validation_error: \t", init_validation_error)
-                        back_1 = dict["attribute"]
-                        back_2 = dict["value"]
-                        back_3 = dict["left"] 
-                        back_4 = dict["right"]
-                        back_5 = dict["leaf"]
-                        back_6 = dict["label"]
-                        back_7 = dict["depth"]
-                        dict["attribute"]=[]
-                        dict["value"]=[]
-                        dict["left"] ={}
-                        dict["right"]={}
-                        dict["leaf"] = True
-                        dict["label"]= [y[i]]
-                        dict["depth"]= dict["depth"]
-                        #print("after: ", count_keys(tree), "\t validation_error: \t", 1-evaluate_dict_form(validation_set,tree))
+                # y = np.bincount(train_set[:,-1].astype(int)) 
+    
+                u, count = np.unique(train_set[:,-1].astype(int), return_counts=True)
+                
+                label = u[np.argmax(count)]
+                # print(label)
+                # for i in range(len(y)):
+                #     if y[i] == maximum: #TODO
+                
+                # print(i, end=" ") # we will replace the node with a leaf with this label
+                init_validation_error = 1-evaluate_dict_form(validation_set,tree)
+                #print("before: ", count_keys(tree), "\t init_validation_error: \t", init_validation_error)
+                back_1 = dict["attribute"]
+                back_2 = dict["value"]
+                back_3 = dict["left"] 
+                back_4 = dict["right"]
+                back_5 = dict["leaf"]
+                back_6 = dict["label"]
+                back_7 = dict["depth"]
+                dict["attribute"]=[]
+                dict["value"]=[]
+                dict["left"] ={}
+                dict["right"]={}
+                dict["leaf"] = True
+                dict["label"]= [label]
+                dict["depth"]= dict["depth"]
+                #print("after: ", count_keys(tree), "\t validation_error: \t", 1-evaluate_dict_form(validation_set,tree))
 
-                        # if evaluation(tree, x_test, y_test) >= init_evaluation:
-                        # print("Val: ", 1-evaluate_dict_form(validation_set,tree) , " Val before: ", init_validation_error)
-                        if 1-evaluate_dict_form(validation_set,tree) <= init_validation_error:
-                            pass
-                        else:
-                            dict["attribute"]   =back_1
-                            dict["value"]       =back_2
-                            dict["left"]        =back_3
-                            dict["right"]       =back_4
-                            dict["leaf"]        =back_5
-                            dict["label"]       =back_6
-                            dict["depth"]       =back_7
+                # if evaluation(tree, x_test, y_test) >= init_evaluation:
+                # print("Val: ", 1-evaluate_dict_form(validation_set,tree) , " Val before: ", init_validation_error)
+                if 1-evaluate_dict_form(validation_set,tree) <= init_validation_error:
+                    pass
+                else:
+                    dict["attribute"]   =back_1
+                    dict["value"]       =back_2
+                    dict["left"]        =back_3
+                    dict["right"]       =back_4
+                    dict["leaf"]        =back_5
+                    dict["label"]       =back_6
+                    dict["depth"]       =back_7
                         
                         
             #     return train_set
@@ -558,6 +565,7 @@ for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_f
         before_valid = evaluate_dict_form(validation_set,tree)
         before_size = count_node(tree)
         before_depth = max_depth(tree)
+        depth_tree[i*n_inner_folds+j]=before_depth
         accuracies_before[i*n_inner_folds+j]=before_test
 
         while(True):
@@ -571,6 +579,7 @@ for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_f
         print("\taccuracy before pruning: ", "{:.3f}".format(before_test), "\t","{:.4f}".format(before_valid), "\t", before_size, "\t", before_depth)
         print("\taccuracy after  pruning: ", "{:.3f}".format(evaluate_dict_form(test_set,tree)), "\t", "{:.4f}".format(evaluate_dict_form(validation_set,tree)), "\t", count_node(tree), "\t", max_depth(tree))
         accuracies_prunned[i*n_inner_folds+j]=evaluate_dict_form(test_set,tree)
+        depth_tree_prunned[i*n_inner_folds+j]=max_depth(tree)
         pruned_tree = DecisionTree(tree)
         predictions = pruned_tree.predict(x_test)
         confusion = metrixs.confusion_matrix(predictions, y_test,  np.unique(np.concatenate((y_train, y_test))))
@@ -585,6 +594,7 @@ metrixs.print_all_from_confusion_matrix(confusion_before_avg)
 print("\tACC                     ", accuracies_before)
 print("\tACC Mean:               ", accuracies_before.mean())
 print("\tACC Std:                ", accuracies_before.std())
+print("\tDEPTH MEAN:             ", depth_tree.mean())
 
 confusion_prunned_avg=confusions_prunned_sum/(n_inner_folds*n_outer_folds)
 print("*********************** after prunning ********************************")
@@ -592,6 +602,7 @@ metrixs.print_all_from_confusion_matrix(confusion_prunned_avg)
 print("\tACC                     ", accuracies_prunned)
 print("\tACC Mean:               ", accuracies_prunned.mean())
 print("\tACC Std:                ", accuracies_prunned.std())
+print("\tDEPTH MEAN:             ", depth_tree_prunned.mean())
 
     # dataset = dataset_noisy
     # # dataset = dataset_clean #dataset_noisy #
