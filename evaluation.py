@@ -51,6 +51,17 @@ def get_f1_measure(precision, recall):
             f1_measures[i] = 2 * precision[i] * recall[i] / (precision[i] + recall[i])
     return f1_measures
 
+def print_all_from_confusion_matrix(confusion):
+    accuracy = get_accuracy(confusion)
+    precision = get_precision(confusion)
+    recall = get_recall(confusion)
+    f1_measure = get_f1_measure(precision, recall)
+    print(confusion)
+    print("\tprecision               ", precision)
+    print("\trecall                  ", recall)
+    print("\tf1_measure              ", f1_measure)
+    
+
 
 # def evaluate(predict_label, test_label):
 #     label_classes = np.unique(np.concatenate((predict_label, test_label)))
