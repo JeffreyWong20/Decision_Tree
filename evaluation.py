@@ -52,15 +52,15 @@ def get_f1_measure(precision, recall):
     return f1_measures
 
 
-def evaluate(predict_label, test_label):
-    label_classes = np.unique(np.concatenate((predict_label, test_label)))
-    confusion = confusion_matrix(predict_label, test_label, label_classes)
-    accuracy = get_accuracy(confusion)
-    precision = get_precision(confusion)
-    recall = get_recall(confusion)
-    f1_measure = get_f1_measure(precision, recall)
-    print("confusion matrix: \n", confusion)
-    print("accuracy: ", accuracy)
-    print("precision: ", precision)
-    print("recall: ", recall)
-    print("f1_measure: ", f1_measure)
+# def evaluate(predict_label, test_label):
+#     label_classes = np.unique(np.concatenate((predict_label, test_label)))
+#     confusion = confusion_matrix(predict_label, test_label, label_classes)
+#     accuracy = get_accuracy(confusion)
+#     precision = get_precision(confusion)
+#     recall = get_recall(confusion)
+#     f1_measure = get_f1_measure(precision, recall)
+#     print("confusion matrix: \n", confusion)
+#     print("accuracy: ", accuracy)
+#     print("precision: ", precision)
+#     print("recall: ", recall)
+#     print("f1_measure: ", f1_measure)

@@ -1,0 +1,150 @@
+------------------CLASS---------------
+0.775
+*******************************************************
+[[49.7  0.   0.2  0.1]
+ [ 0.  48.3  1.7  0. ]
+ [ 0.2  1.6 48.   0.2]
+ [ 0.4  0.   0.2 49.4]]
+Clean_set
+	ACC                      [0.98  0.99  0.975 0.98  0.98  0.97  0.98  0.985 0.975 0.955]
+	ACC by evaluate_function 0.977
+	precision                [0.98807157 0.96793587 0.95808383 0.99396378]
+	recall                   [0.994 0.966 0.96  0.988]
+	f1_measure               [0.99102692 0.96696697 0.95904096 0.99097292]
+	ACC Mean:                0.977
+	ACC Std:                 0.009000000000000008
+	Tree Node Number:        85
+*******************************************************
+[[38.5  3.4  3.4  3.7]
+ [ 2.9 40.   3.8  3. ]
+ [ 3.3  3.6 41.9  2.7]
+ [ 3.5  2.4  3.3 40.6]]
+Noisy_set
+	ACC                      [0.775 0.81  0.85  0.77  0.815 0.785 0.84  0.785 0.82  0.8  ]
+	ACC by evaluate_function 0.805
+	precision                [0.79875519 0.8097166  0.79961832 0.812     ]
+	recall                   [0.78571429 0.80482897 0.81359223 0.81526104]
+	f1_measure               [0.79218107 0.80726539 0.80654475 0.81362725]
+	ACC Mean:                0.805
+	ACC Std:                 0.02559296778413943
+	Tree Node Number:        603
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+outer_fold: 10  n_inner_folds: 2
+		Data table		
+accuracy before pruning:	Test_evl	Val_evl		Size_before_pruning
+accuracy After pruning: 	Test_evl	Val_evl		Size_after_pruning
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+Outer Fold 0
+-------------------------------------------------
+OuterFold:  0   inner_fold:  1
+	accuracy before pruning:  0.960 	 0.9578 	 43 	 8
+	accuracy after  pruning:  0.955 	 0.9589 	 39 	 8
+-------------------------------------------------
+OuterFold:  0   inner_fold:  2
+	accuracy before pruning:  0.970 	 0.9633 	 53 	 11
+	accuracy after  pruning:  0.965 	 0.9633 	 49 	 11
+Outer Fold 1
+-------------------------------------------------
+OuterFold:  1   inner_fold:  1
+	accuracy before pruning:  0.985 	 0.9589 	 53 	 9
+	accuracy after  pruning:  0.985 	 0.9600 	 51 	 9
+-------------------------------------------------
+OuterFold:  1   inner_fold:  2
+	accuracy before pruning:  0.995 	 0.9711 	 53 	 9
+	accuracy after  pruning:  0.995 	 0.9711 	 49 	 9
+Outer Fold 2
+-------------------------------------------------
+OuterFold:  2   inner_fold:  1
+	accuracy before pruning:  0.955 	 0.9667 	 47 	 9
+	accuracy after  pruning:  0.960 	 0.9711 	 43 	 8
+-------------------------------------------------
+OuterFold:  2   inner_fold:  2
+	accuracy before pruning:  0.975 	 0.9744 	 51 	 10
+	accuracy after  pruning:  0.975 	 0.9744 	 47 	 10
+Outer Fold 3
+-------------------------------------------------
+OuterFold:  3   inner_fold:  1
+	accuracy before pruning:  0.965 	 0.9644 	 53 	 10
+	accuracy after  pruning:  0.965 	 0.9644 	 51 	 10
+-------------------------------------------------
+OuterFold:  3   inner_fold:  2
+	accuracy before pruning:  0.955 	 0.9744 	 39 	 9
+	accuracy after  pruning:  0.955 	 0.9744 	 35 	 8
+Outer Fold 4
+-------------------------------------------------
+OuterFold:  4   inner_fold:  1
+	accuracy before pruning:  0.990 	 0.9700 	 49 	 9
+	accuracy after  pruning:  0.980 	 0.9700 	 41 	 8
+-------------------------------------------------
+OuterFold:  4   inner_fold:  2
+	accuracy before pruning:  0.970 	 0.9678 	 57 	 10
+	accuracy after  pruning:  0.960 	 0.9700 	 55 	 10
+Outer Fold 5
+-------------------------------------------------
+OuterFold:  5   inner_fold:  1
+	accuracy before pruning:  0.965 	 0.9600 	 37 	 7
+	accuracy after  pruning:  0.960 	 0.9611 	 35 	 6
+-------------------------------------------------
+OuterFold:  5   inner_fold:  2
+	accuracy before pruning:  0.970 	 0.9656 	 59 	 11
+	accuracy after  pruning:  0.970 	 0.9678 	 55 	 10
+Outer Fold 6
+-------------------------------------------------
+OuterFold:  6   inner_fold:  1
+	accuracy before pruning:  0.975 	 0.9711 	 45 	 8
+	accuracy after  pruning:  0.980 	 0.9756 	 41 	 8
+-------------------------------------------------
+OuterFold:  6   inner_fold:  2
+	accuracy before pruning:  0.960 	 0.9722 	 49 	 10
+	accuracy after  pruning:  0.955 	 0.9722 	 43 	 9
+Outer Fold 7
+-------------------------------------------------
+OuterFold:  7   inner_fold:  1
+	accuracy before pruning:  0.960 	 0.9622 	 55 	 12
+	accuracy after  pruning:  0.950 	 0.9644 	 51 	 11
+-------------------------------------------------
+OuterFold:  7   inner_fold:  2
+	accuracy before pruning:  0.960 	 0.9622 	 43 	 9
+	accuracy after  pruning:  0.960 	 0.9622 	 41 	 9
+Outer Fold 8
+-------------------------------------------------
+OuterFold:  8   inner_fold:  1
+	accuracy before pruning:  0.985 	 0.9611 	 51 	 11
+	accuracy after  pruning:  0.985 	 0.9611 	 49 	 11
+-------------------------------------------------
+OuterFold:  8   inner_fold:  2
+	accuracy before pruning:  0.990 	 0.9711 	 59 	 11
+	accuracy after  pruning:  0.985 	 0.9722 	 53 	 11
+Outer Fold 9
+-------------------------------------------------
+OuterFold:  9   inner_fold:  1
+	accuracy before pruning:  0.965 	 0.9656 	 49 	 10
+	accuracy after  pruning:  0.965 	 0.9656 	 43 	 10
+-------------------------------------------------
+OuterFold:  9   inner_fold:  2
+	accuracy before pruning:  0.955 	 0.9744 	 41 	 8
+	accuracy after  pruning:  0.960 	 0.9744 	 37 	 8
+********************* before prunning **********************************
+[[49.4   0.    0.2   0.4 ]
+ [ 0.   48.    2.    0.  ]
+ [ 0.35  1.85 47.25  0.55]
+ [ 0.35  0.    0.25 49.4 ]]
+	ACC                      [0.96  0.97  0.985 0.995 0.955 0.975 0.965 0.955 0.99  0.97  0.965 0.97
+ 0.975 0.96  0.96  0.96  0.985 0.99  0.965 0.955]
+	precision                [0.98602794 0.96288867 0.95070423 0.98113208]
+	recall                   [0.988 0.96  0.945 0.988]
+	f1_measure               [0.98701299 0.96144216 0.94784353 0.98455406]
+	ACC Mean:                0.9702499999999998
+	ACC Std:                 0.01239707626821745
+*********************** after prunning ********************************
+[[49.25  0.05  0.5   0.2 ]
+ [ 0.05 47.75  2.2   0.  ]
+ [ 0.55  1.7  47.3   0.45]
+ [ 0.3   0.05  0.3  49.35]]
+	ACC                      [0.955 0.965 0.985 0.995 0.96  0.975 0.965 0.955 0.98  0.96  0.96  0.97
+ 0.98  0.955 0.95  0.96  0.985 0.985 0.965 0.96 ]
+	precision                [0.98205384 0.96367306 0.94035785 0.987     ]
+	recall                   [0.985 0.955 0.946 0.987]
+	f1_measure               [0.98352471 0.95931693 0.94317049 0.987     ]
+	ACC Mean:                0.9682499999999999
+	ACC Std:                 0.01247747971346779
