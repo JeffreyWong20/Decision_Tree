@@ -2,6 +2,8 @@
 >COMP 70050: Introduction to Machine Learning Coursework1
 >
 >Implementing a decision tree algorithm and use it to determine one of the indoor locations based on WIFI signal strengths collected from a mobile phone.
+>
+>The results of experiments is discussed in the ML_Coursework_Report.pdf.
 
 ## Environment
 1. install python3, then add it to system PATH(/bin)
