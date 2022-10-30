@@ -1,5 +1,6 @@
 # Decision_Tree
-COMP 70050: Introduction to Machine Learning Coursework1
+>COMP 70050: Introduction to Machine Learning Coursework1
+>Implementing a decision tree algorithm and use it to determine one of the indoor locations based on WIFI signal strengths collected from a mobile phone.
 
 ## Environment
 1. install python3, then add it to system PATH(/bin)
