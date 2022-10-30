@@ -1,15 +1,15 @@
 # Decision_Tree
 COMP 70050: Introduction to Machine Learning Coursework1
 
-### Environment
+## Environment
 1. install python3, then add it to system PATH(/bin)
 2. Install all requirements by "pip install -r requirement.txt"
 
-### For Use
+## For Use
 * Option 1: use "python cw.py" to run cw.py to train the decision tree
 * Option 2: use "bash run.sh" to run cw.py and the output from console will be stored into output.txt files.
 
-### Config
+## Config
 You can change the behavior of the decision tree training by adjusting values in file "config.py"
 #### General
 * DATASET_PATH_NOISY    : the path towards the dataset
@@ -22,7 +22,7 @@ You can change the behavior of the decision tree training by adjusting values in
 * PLOT_TREE             : whether plot the tree's diagram by matplotlib  
 * DATASET               : "CLEAN" // "NOISY" , to indicate which dataset to use on ploted tree training 
 
-### Project file structure
+## Project file structure
 1. cw.py: main file for training and verbose output
 2. utils.py: file contains all the helper functions
 3. plot_tree.py: used for generate tree diagram
