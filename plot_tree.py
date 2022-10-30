@@ -1,6 +1,5 @@
 # from treelib import Node, Tree
 import matplotlib.pyplot as plt
-import numpy as np
 
 tree = {
     "attribute": [],

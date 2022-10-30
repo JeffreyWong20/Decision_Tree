@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def confusion_matrix(predict_label, test_label, label_classes):
     confusion = np.zeros((len(label_classes), len(label_classes)))
     for i, label in enumerate(label_classes):

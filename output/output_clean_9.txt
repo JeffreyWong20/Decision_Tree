@@ -1,0 +1,172 @@
+*******************************************************
+Clean_set
+[[49.7  0.   0.2  0.1]
+ [ 0.  48.3  1.7  0. ]
+ [ 0.2  1.6 48.   0.2]
+ [ 0.4  0.   0.2 49.4]]
+	precision                [0.98807157 0.96793587 0.95808383 0.99396378]
+	recall                   [0.994 0.966 0.96  0.988]
+	f1_measure               [0.99102692 0.96696697 0.95904096 0.99097292]
+	ACC                      [0.98  0.99  0.975 0.98  0.98  0.97  0.98  0.985 0.975 0.955]
+	ACC Mean:                0.977
+	ACC Std:                 0.009000000000000008
+	Tree Node Number:        85
+*******************************************************
+Noisy_set
+[[38.5  3.4  3.4  3.7]
+ [ 2.9 40.   3.8  3. ]
+ [ 3.3  3.6 41.9  2.7]
+ [ 3.5  2.4  3.3 40.6]]
+	precision                [0.79875519 0.8097166  0.79961832 0.812     ]
+	recall                   [0.78571429 0.80482897 0.81359223 0.81526104]
+	f1_measure               [0.79218107 0.80726539 0.80654475 0.81362725]
+	ACC                      [0.775 0.81  0.85  0.77  0.815 0.785 0.84  0.785 0.82  0.8  ]
+	ACC Mean:                0.805
+	ACC Std:                 0.02559296778413943
+	Tree Node Number:        603
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+outer_fold: 10  n_inner_folds: 9
+		Data table		
+accuracy before pruning:	Test_evl	Val_evl		Size_before_pruning
+accuracy After pruning: 	Test_evl	Val_evl		Size_after_pruning
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+Outer Fold 0
+-------------------------------------------------
+OuterFold:  0   inner_fold:  1
+	accuracy before pruning:  0.960 	 0.9400 	 71 	 11
+	accuracy after  pruning:  0.970 	 0.9500 	 27 	 9
+-------------------------------------------------
+OuterFold:  0   inner_fold:  2
+	accuracy before pruning:  0.960 	 0.9600 	 79 	 14
+	accuracy after  pruning:  0.960 	 0.9700 	 39 	 11
+-------------------------------------------------
+OuterFold:  0   inner_fold:  3
+	accuracy before pruning:  0.980 	 0.9700 	 77 	 10
+	accuracy after  pruning:  0.970 	 0.9900 	 35 	 10
+-------------------------------------------------
+OuterFold:  0   inner_fold:  4
+	accuracy before pruning:  0.960 	 0.9500 	 63 	 10
+	accuracy after  pruning:  0.965 	 0.9500 	 27 	 7
+-------------------------------------------------
+OuterFold:  0   inner_fold:  5
+	accuracy before pruning:  0.970 	 0.9700 	 73 	 11
+	accuracy after  pruning:  0.955 	 0.9700 	 13 	 5
+-------------------------------------------------
+OuterFold:  0   inner_fold:  6
+	accuracy before pruning:  0.965 	 0.9850 	 81 	 11
+	accuracy after  pruning:  0.960 	 0.9900 	 31 	 6
+-------------------------------------------------
+OuterFold:  0   inner_fold:  7
+	accuracy before pruning:  0.980 	 0.9700 	 77 	 12
+	accuracy after  pruning:  0.970 	 0.9750 	 39 	 12
+-------------------------------------------------
+OuterFold:  0   inner_fold:  8
+	accuracy before pruning:  0.965 	 0.9750 	 79 	 13
+	accuracy after  pruning:  0.950 	 0.9850 	 13 	 4
+-------------------------------------------------
+OuterFold:  0   inner_fold:  9
+	accuracy before pruning:  0.970 	 0.9900 	 81 	 12
+	accuracy after  pruning:  0.950 	 0.9950 	 13 	 4
+Outer Fold 1
+-------------------------------------------------
+OuterFold:  1   inner_fold:  1
+	accuracy before pruning:  0.990 	 0.9600 	 73 	 13
+	accuracy after  pruning:  0.980 	 0.9700 	 35 	 9
+-------------------------------------------------
+OuterFold:  1   inner_fold:  2
+	accuracy before pruning:  0.995 	 0.9700 	 73 	 13
+	accuracy after  pruning:  0.990 	 0.9700 	 29 	 10
+-------------------------------------------------
+OuterFold:  1   inner_fold:  3
+	accuracy before pruning:  0.995 	 0.9850 	 83 	 12
+	accuracy after  pruning:  0.995 	 0.9950 	 27 	 6
+-------------------------------------------------
+OuterFold:  1   inner_fold:  4
+	accuracy before pruning:  0.995 	 0.9800 	 77 	 12
+	accuracy after  pruning:  0.980 	 0.9850 	 37 	 9
+-------------------------------------------------
+OuterFold:  1   inner_fold:  5
+	accuracy before pruning:  0.995 	 0.9700 	 79 	 12
+	accuracy after  pruning:  0.990 	 0.9850 	 41 	 10
+-------------------------------------------------
+OuterFold:  1   inner_fold:  6
+	accuracy before pruning:  0.995 	 0.9650 	 69 	 12
+	accuracy after  pruning:  0.975 	 0.9850 	 11 	 4
+-------------------------------------------------
+OuterFold:  1   inner_fold:  7
+	accuracy before pruning:  0.995 	 0.9900 	 79 	 13
+	accuracy after  pruning:  0.980 	 0.9900 	 29 	 10
+-------------------------------------------------
+OuterFold:  1   inner_fold:  8
+	accuracy before pruning:  0.990 	 0.9600 	 79 	 11
+	accuracy after  pruning:  0.980 	 0.9650 	 27 	 9
+-------------------------------------------------
+OuterFold:  1   inner_fold:  9
+	accuracy before pruning:  0.995 	 0.9600 	 79 	 13
+	accuracy after  pruning:  0.980 	 0.9700 	 29 	 10
+Outer Fold 2
+-------------------------------------------------
+OuterFold:  2   inner_fold:  1
+	accuracy before pruning:  0.970 	 0.9650 	 77 	 10
+	accuracy after  pruning:  0.960 	 0.9800 	 31 	 6
+-------------------------------------------------
+OuterFold:  2   inner_fold:  2
+	accuracy before pruning:  0.980 	 0.9850 	 77 	 13
+	accuracy after  pruning:  0.965 	 0.9900 	 23 	 7
+-------------------------------------------------
+OuterFold:  2   inner_fold:  3
+	accuracy before pruning:  0.975 	 0.9850 	 79 	 11
+	accuracy after  pruning:  0.960 	 0.9850 	 35 	 10
+-------------------------------------------------
+OuterFold:  2   inner_fold:  4
+	accuracy before pruning:  0.970 	 0.9700 	 75 	 13
+	accuracy after  pruning:  0.970 	 0.9750 	 29 	 10
+-------------------------------------------------
+OuterFold:  2   inner_fold:  5
+	accuracy before pruning:  0.970 	 0.9750 	 77 	 11
+	accuracy after  pruning:  0.965 	 0.9950 	 23 	 6
+-------------------------------------------------
+OuterFold:  2   inner_fold:  6
+	accuracy before pruning:  0.975 	 0.9750 	 79 	 11
+	accuracy after  pruning:  0.960 	 0.9800 	 29 	 9
+-------------------------------------------------
+OuterFold:  2   inner_fold:  7
+	accuracy before pruning:  0.965 	 0.9700 	 77 	 11
+	accuracy after  pruning:  0.950 	 0.9850 	 23 	 6
+-------------------------------------------------
+OuterFold:  2   inner_fold:  8
+	accuracy before pruning:  0.975 	 0.9700 	 83 	 12
+	accuracy after  pruning:  0.965 	 0.9850 	 43 	 11
+-------------------------------------------------
+OuterFold:  2   inner_fold:  9
+	accuracy before pruning:  0.970 	 0.9650 	 71 	 11
+	accuracy after  pruning:  0.955 	 0.9700 	 27 	 8
+Outer Fold 3
+-------------------------------------------------
+OuterFold:  3   inner_fold:  1
+	accuracy before pruning:  0.965 	 0.9900 	 73 	 12
+	accuracy after  pruning:  0.965 	 0.9900 	 47 	 10
+-------------------------------------------------
+OuterFold:  3   inner_fold:  2
+	accuracy before pruning:  0.960 	 0.9900 	 67 	 10
+	accuracy after  pruning:  0.960 	 0.9900 	 41 	 10
+-------------------------------------------------
+OuterFold:  3   inner_fold:  3
+	accuracy before pruning:  0.970 	 0.9800 	 71 	 12
+	accuracy after  pruning:  0.960 	 0.9800 	 11 	 4
+-------------------------------------------------
+OuterFold:  3   inner_fold:  4
+	accuracy before pruning:  0.960 	 0.9800 	 75 	 12
+	accuracy after  pruning:  0.955 	 0.9950 	 43 	 10
+-------------------------------------------------
+OuterFold:  3   inner_fold:  5
+	accuracy before pruning:  0.960 	 0.9650 	 73 	 10
+	accuracy after  pruning:  0.955 	 0.9850 	 25 	 8
+-------------------------------------------------
+OuterFold:  3   inner_fold:  6
+	accuracy before pruning:  0.960 	 0.9650 	 61 	 9
+	accuracy after  pruning:  0.970 	 0.9650 	 27 	 8
+-------------------------------------------------
+OuterFold:  3   inner_fold:  7
+	accuracy before pruning:  0.950 	 0.9550 	 67 	 13
+	accuracy after  pruning:  0.965 	 0.9600 	 23 	 6

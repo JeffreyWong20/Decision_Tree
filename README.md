@@ -7,21 +7,26 @@ COMP 70050: Introduction to Machine Learning Coursework1
 
 ### For Use
 * Option 1: use "python cw.py" to run cw.py to train the decision tree
-* Option 1: use "bash run.sh" to run cw.py and the output from console will be stored into txt files.
+* Option 2: use "bash run.sh" to run cw.py and the output from console will be stored into output.txt files.
 
 ### Config
 You can change the behavior of the decision tree training by adjusting values in file "config.py"
-* PLOT_TREE: whether plot the tree's diagram by matplotlib
-* DATASET_PATH_NOISY: the path towards the dataset
-* DATASET_PATH_CLEAN: the path towards the dataset
-* RANDOM_SEED: whether random seed for all random generator
-* N_OUTER_FOLDS: number of outer folds, default as 10
-* N_INNER_FOLDS: number of inner folds
+#### General
+* DATASET_PATH_NOISY    : the path towards the dataset
+* DATASET_PATH_CLEAN    : the path towards the dataset
+* DATASET               : "CLEAN" // "NOISY" , to indicate which dataset to use ( before and after pruning )
+* RANDOM_SEED           : whether random seed for all random generator
+* N_OUTER_FOLDS         : number of outer folds, default as 10
+* N_INNER_FOLDS         : number of inner folds
+#### PLOTING 
+* PLOT_TREE             : whether plot the tree's diagram by matplotlib  
+* DATASET               : "CLEAN" // "NOISY" , to indicate which dataset to use on ploted tree training 
 
 ### Project file structure
 1. cw.py: main file for training and verbose output
-2. plot_tree.py: used for generate tree diagram
-3. evaluation.py: used for evaluate the tree
-4. configs.py: determine key settings for the decision tree training
+2. utils.py: file contains all the helper functions
+3. plot_tree.py: used for generate tree diagram
+4. evaluation.py: used for evaluate the tree
+5. configs.py: determine key settings for the decision tree training
 
 
