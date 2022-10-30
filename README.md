@@ -32,6 +32,7 @@ You can change the behavior of the decision tree training by adjusting values in
 3. plot_tree.py: used for generate tree diagram
 4. evaluation.py: used for evaluate the tree
 5. configs.py: determine key settings for the decision tree training
+6. /output: contains previous output log
 ```
 # Function Enabler
 PLOT_TREE = True
