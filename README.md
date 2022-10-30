@@ -18,13 +18,13 @@ You can change the behavior of the decision tree training by adjusting values in
 #### General
 * `DATASET_PATH_NOISY`    : the path towards the dataset
 * `DATASET_PATH_CLEAN`    : the path towards the dataset
-* `DATASET`               : "CLEAN" // "NOISY" , to indicate which dataset to use ( before and after pruning )
+* `DATASET`               : **"CLEAN"** | **"NOISY"** , to indicate which dataset to use ( before and after pruning )
 * `RANDOM_SEED`           : whether random seed for all random generator
 * `N_OUTER_FOLDS`         : number of outer folds, default as 10
 * `N_INNER_FOLDS`         : number of inner folds
 #### PLOTING 
 * `PLOT_TREE`             : whether plot the tree's diagram by matplotlib  
-* `DATASET`               : "CLEAN" // "NOISY" , to indicate which dataset to use on ploted tree training 
+* `DATASET`               : **"CLEAN"** | **"NOISY"** , to indicate which dataset to use on ploted tree training 
 
 ## Project file structure
 1. cw.py: main file for training and verbose output
