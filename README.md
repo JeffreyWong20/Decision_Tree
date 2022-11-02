@@ -34,7 +34,8 @@ The following default parameters is used for generating the result shown in the 
 3. plot_tree.py: used for generate tree diagram
 4. evaluation.py: used for evaluate the tree
 5. configs.py: determine key settings for the decision tree training
-6. /output: contains previous output log
+6. ./output: contains previous output log
+7. ./intro2ML-coursework1: contains dataset
 ```
 # The following default parameters is used for generating the result shown in the report.
 
