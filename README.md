@@ -34,6 +34,8 @@ You can change the behavior of the decision tree training by adjusting values in
 5. configs.py: determine key settings for the decision tree training
 6. /output: contains previous output log
 ```
+# The following default parameters is used for generating the result shown in the report.
+
 # Function Enabler
 PLOT_TREE = True
 DATASET_PATH_NOISY = "./intro2ML-coursework1/wifi_db/noisy_dataset.txt"
@@ -42,9 +44,9 @@ DATASET = "CLEAN" # "NOISY                                                     #
 RANDOM_SEED = 50012
 MAX_DEPTH = 10000
 
-# K_FOLDS
-N_OUTER_FOLDS = 10
-N_INNER_FOLDS = 9
+# K_FOLDS 
+N_OUTER_FOLDS = 10    # The total number of outer folds for K-nested cross validation 
+N_INNER_FOLDS = 9     # The total number of inner folds for K-nested cross validation 
 ```
 
 
