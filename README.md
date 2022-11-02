@@ -15,6 +15,7 @@
 
 ## Config
 You can change the behavior of the decision tree training by adjusting values in file "config.py"
+
 The following default parameters is used for generating the result shown in the report.
 #### General
 * `DATASET_PATH_NOISY`    : the path towards the dataset
