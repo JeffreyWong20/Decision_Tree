@@ -24,7 +24,7 @@ The following default parameters is used for generating the result shown in the 
 * `N_OUTER_FOLDS`         : number of outer folds, default as 10
 * `N_INNER_FOLDS`         : number of inner folds, default as 9 
 * `RANDOM_SEED`           : random seed for all random generator to randomize dataset, default as 50012
-#### PLOTING 
+#### PLOTING  (Before Pruning)
 * `PLOT_TREE`             : whether plot the tree's diagram by matplotlib  
 * `DATASET`               : **"CLEAN"** | **"NOISY"** , to indicate which dataset to use on ploted tree training 
 
