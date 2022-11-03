@@ -4,7 +4,6 @@ from plot_tree import plot_tree
 import evaluation as metrixs
 import utils
 from configs import *
-limit = MAX_DEPTH
 
 class DecisionTree:
     def __init__(self,tree,random_generator=default_rng()):
