@@ -6,7 +6,7 @@
 >The results of experiments is discussed in the ML_Coursework_Report.pdf.
 
 ## Environment
-1. install python3, then add it to system PATH(/bin)
+1. Install python3, then add it to system PATH(/bin)
 2. Install all requirements by "pip install -r requirement.txt"
 
 ## For Use
