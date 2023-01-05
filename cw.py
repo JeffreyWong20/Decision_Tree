@@ -15,7 +15,7 @@ class DecisionTree:
         train_set = np.insert(x_train, x_train.shape[1], y_train, axis=1)
         train_set = np.asarray(train_set)
         self.tree = utils.decision_tree_learning(train_set,0)
-
+   #hee
     def predict(self, x):
         y = np.zeros((len(x), ), dtype=int)  
         for i,testcase in enumerate(x):
